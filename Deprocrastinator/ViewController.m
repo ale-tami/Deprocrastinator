@@ -8,13 +8,15 @@
 
 #import "ViewController.h"
 
-@interface ViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface ViewController () <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UITextField *addItemTextView;
 
 @property (strong, nonatomic) NSMutableArray * todosArray;
+@property (strong, nonatomic) UIAlertView * alertView;
 @property BOOL isEditing;
+@property (strong, nonatomic) NSIndexPath * indexpathToDelete;
 
 
 @end
@@ -33,6 +35,28 @@
                         nil];
     
     self.isEditing = NO;
+    
+    self.alertView = [[UIAlertView alloc]init];
+    self.alertView.delegate = self;
+    
+    self.alertView.title = @"Delete item?";
+    
+    [self.alertView addButtonWithTitle:@"Yes"];
+    [self.alertView addButtonWithTitle:@"Nnnnope"];
+
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) {
+        [self deleteItem];
+    }
+}
+
+- (void) deleteItem
+{
+    [self.todosArray removeObject: [self.tableView cellForRowAtIndexPath:self.indexpathToDelete].textLabel.text];
+    [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:self.indexpathToDelete] withRowAnimation:UITableViewRowAnimationFade];
 
 }
 
@@ -85,7 +109,6 @@
 }
 
 
-
 #pragma mark datasource
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -106,9 +129,8 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self.todosArray removeObject: [tableView cellForRowAtIndexPath:indexPath].textLabel.text];
-    [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-
+    self.indexpathToDelete = indexPath;
+    [self.alertView show];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
@@ -132,9 +154,11 @@
     
     if (self.isEditing) {
         
-        NSArray *deleteArray = [NSArray arrayWithObject:indexPath];
-        [self.todosArray removeObject: thyCell.textLabel.text];
-        [tableView deleteRowsAtIndexPaths:deleteArray withRowAnimation:UITableViewRowAnimationFade];
+        self.indexpathToDelete = indexPath;
+        [self.alertView show];
+//        NSArray *deleteArray = [NSArray arrayWithObject:indexPath];
+//        [self.todosArray removeObject: thyCell.textLabel.text];
+//        [tableView deleteRowsAtIndexPaths:deleteArray withRowAnimation:UITableViewRowAnimationFade];
         
     } else {
         
