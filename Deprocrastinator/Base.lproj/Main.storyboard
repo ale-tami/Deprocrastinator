@@ -54,6 +54,7 @@
                                 <rect key="frame" x="0.0" y="50" width="320" height="518"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <gestureRecognizers/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="xYj-BX-PNE">
                                         <rect key="frame" x="0.0" y="22" width="320" height="44"/>
@@ -67,6 +68,7 @@
                                 <connections>
                                     <outlet property="dataSource" destination="vXZ-lx-hvc" id="ohc-1k-tB6"/>
                                     <outlet property="delegate" destination="vXZ-lx-hvc" id="T8V-X3-3Fv"/>
+                                    <outletCollection property="gestureRecognizers" destination="ogT-Lu-2kz" appends="YES" id="ist-cf-goe"/>
                                 </connections>
                             </tableView>
                         </subviews>
@@ -78,6 +80,11 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
+                <swipeGestureRecognizer direction="right" id="ogT-Lu-2kz">
+                    <connections>
+                        <action selector="onSwipe:" destination="vXZ-lx-hvc" id="UPw-u1-Noo"/>
+                    </connections>
+                </swipeGestureRecognizer>
             </objects>
         </scene>
     </scenes>

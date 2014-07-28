@@ -49,13 +49,42 @@
     
 }
 
-- (IBAction)onEditButtonPressed:(UIButton*)sender {
+- (IBAction)onEditButtonPressed:(UIButton*)sender
+{
     
+    if (self.isEditing) {
+        [sender setTitle:@"Edit" forState:UIControlStateNormal];
+        [self.tableView setEditing:NO animated:YES];
+        self.isEditing = NO;
+    } else {
+        [sender setTitle:@"Done" forState:UIControlStateNormal];
+        [self.tableView setEditing:YES animated:YES];
+        self.isEditing = YES;
+    }
+
+}
+
+- (IBAction)onSwipe:(UISwipeGestureRecognizer*)sender
+{
+    CGPoint point = [sender locationInView:self.tableView];
     
-    [sender setTitle:@"Done" forState:UIControlStateHighlighted];
-    self.isEditing = YES;
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[self.tableView indexPathForRowAtPoint:point]];
+    
+    if (cell) {
+        
+        if (cell.textLabel.textColor == [UIColor redColor]) {
+            cell.textLabel.textColor = [UIColor yellowColor];
+        }else if (cell.textLabel.textColor == [UIColor yellowColor]){
+            cell.textLabel.textColor = [UIColor blueColor]; //green is for completed todos
+        } else {
+            cell.textLabel.textColor = [UIColor redColor];
+        }
+    
+    }
     
 }
+
+
 
 #pragma mark datasource
 
@@ -73,6 +102,25 @@
     cell.textLabel.text = [self.todosArray objectAtIndex:indexPath.row];
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self.todosArray removeObject: [tableView cellForRowAtIndexPath:indexPath].textLabel.text];
+    [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+
+}
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
+{
+    NSString *stringToMove = self.todosArray[sourceIndexPath.row];
+    [self.todosArray removeObjectAtIndex:sourceIndexPath.row];
+    [self.todosArray insertObject:stringToMove atIndex:destinationIndexPath.row];
 }
 
 #pragma mark delegate
@@ -93,8 +141,6 @@
         thyCell.textLabel.textColor = [UIColor greenColor];
         
     }
-    
-    
     
 }
 
