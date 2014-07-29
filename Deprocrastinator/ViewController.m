@@ -14,6 +14,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *addItemTextView;
 
 @property (strong, nonatomic) NSMutableArray * todosArray;
+@property (strong, nonatomic) NSMutableArray * greenOnesArray;
 @property (strong, nonatomic) UIAlertView * alertView;
 @property BOOL isEditing;
 @property (strong, nonatomic) NSIndexPath * indexpathToDelete;
@@ -38,11 +39,11 @@
     
     self.alertView = [[UIAlertView alloc]init];
     self.alertView.delegate = self;
-    
     self.alertView.title = @"Delete item?";
-    
     [self.alertView addButtonWithTitle:@"Yes"];
     [self.alertView addButtonWithTitle:@"Nnnnope"];
+    
+    self.greenOnesArray = [[NSMutableArray alloc] init];
 
 }
 
@@ -56,6 +57,7 @@
 - (void) deleteItem
 {
     [self.todosArray removeObject: [self.tableView cellForRowAtIndexPath:self.indexpathToDelete].textLabel.text];
+    [self.greenOnesArray removeObject: [self.tableView cellForRowAtIndexPath:self.indexpathToDelete]];
     [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:self.indexpathToDelete] withRowAnimation:UITableViewRowAnimationFade];
 
 }
@@ -99,7 +101,7 @@
         if (cell.textLabel.textColor == [UIColor redColor]) {
             cell.textLabel.textColor = [UIColor yellowColor];
         }else if (cell.textLabel.textColor == [UIColor yellowColor]){
-            cell.textLabel.textColor = [UIColor blueColor]; //green is for completed todos
+            cell.textLabel.textColor = [UIColor blueColor]; //green is for completed to dos
         } else {
             cell.textLabel.textColor = [UIColor redColor];
         }
@@ -123,6 +125,10 @@
     
     cell.selectionStyle = UITableViewCellSeparatorStyleNone;
     cell.textLabel.text = [self.todosArray objectAtIndex:indexPath.row];
+    
+    if ( [self.greenOnesArray containsObject: cell] ) {
+        cell.textLabel.textColor = [UIColor greenColor];
+    }
     
     return cell;
 }
@@ -163,6 +169,7 @@
     } else {
         
         thyCell.textLabel.textColor = [UIColor greenColor];
+        [self.greenOnesArray addObject:thyCell];
         
     }
     
